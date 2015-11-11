@@ -1,0 +1,60 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context="com.akamba.roland.mycoursequiz.TemplateQuestion">
+
+    <!-- libelle question-->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/info"
+        android:layout_marginBottom="20dp"
+        android:autoText="false" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Question 1"
+        android:id="@+id/libelleQ"
+        android:autoText="false" />
+
+    <!-- proposition question-->
+    <RadioGroup
+        android:id="@+id/rGroup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+    <RadioButton
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rb1"
+        android:clickable="true" />
+
+    <RadioButton
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="choix2"
+        android:id="@+id/rb2"
+        android:clickable="true" />
+
+    <RadioButton
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="choix3"
+        android:id="@+id/rb3"
+        android:clickable="true" />
+
+    <RadioButton
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="choix4"
+        android:id="@+id/rb4"
+        android:clickable="true" />
+    </RadioGroup>
+    <Button
+        android:id="@+id/btnValider"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Valider"/>
+</LinearLayout>

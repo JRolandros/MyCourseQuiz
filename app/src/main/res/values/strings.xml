@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Quiz</string>
+    <string name="title">Please if you like the application evaluate it!</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_play">PlayActivity</string>
+    <string name="title_activity_jee">JEE Quiz</string>
+    <string name="title_activity_android">Android Quiz</string>
+    <string name="title_activity_evaluate">Apps Evaluation</string>
+    <string name="title_activity_template_question">TemplateQuestion</string>
+    <string name="title_activity_about">About Activity</string>
+</resources>
