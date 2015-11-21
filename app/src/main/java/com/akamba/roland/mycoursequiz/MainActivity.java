@@ -16,7 +16,11 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.akamba.roland.mycoursequiz.Utilities.ExpandableListAdapter;
+import com.akamba.roland.mycoursequiz.beans.Choix;
+import com.akamba.roland.mycoursequiz.beans.Joueur;
+import com.akamba.roland.mycoursequiz.beans.LibelleQuestion;
 import com.akamba.roland.mycoursequiz.beans.Statistiques;
+import com.akamba.roland.mycoursequiz.data.DataManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,8 +43,91 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        DataManager dataManager=new DataManager(this);
+        dataManager.open();
 
+        Choix choix;
+        LibelleQuestion libelleQ;
+/*
+      //q1
+        libelleQ=new LibelleQuestion(1,"Pourquoi le framework Spring est t-il qualifie comme conteneur leger?","JEE",2,null);
+        dataManager.addQuestion(libelleQ);
+        choix=new Choix(1,false,"La taille des jars",1);
+        dataManager.addChoix(choix);
+        choix=new Choix(2,true,"La faible charge de developpement",1);
+        dataManager.addChoix(choix);
+        choix=new Choix(3,false,"La possibilite de deployer une application sur le conteneur de servlet",1);
+        dataManager.addChoix(choix);
+        choix=new Choix(4,false,"En oppisition avec la EJB",1);
+        dataManager.addChoix(choix);
 
+        //q2
+        libelleQ=new LibelleQuestion(2,"Pour qu'un attribut soit instancie avec un bean on doit utiliser l'annotation?","JEE",8,null);
+        dataManager.addQuestion(libelleQ);
+        choix=new Choix(5,false,"@Autowired",2);
+        dataManager.addChoix(choix);
+        choix=new Choix(6,false,"@Value",2);
+        dataManager.addChoix(choix);
+        choix=new Choix(7,false,"@Controller",2);
+        dataManager.addChoix(choix);
+        choix=new Choix(8,true,"@Resource",2);
+        dataManager.addChoix(choix);
+
+        //q3
+        libelleQ=new LibelleQuestion(3,"Pour grader l'ordre d'insertion des cles, on doit utiliser la classe","JEE",11,null);
+        dataManager.addQuestion(libelleQ);
+        choix=new Choix(9,false,"TreeTable",3);
+        dataManager.addChoix(choix);
+        choix=new Choix(10,false,"HashTable",3);
+        dataManager.addChoix(choix);
+        choix=new Choix(11,true,"LinkedHashMap",3);
+        dataManager.addChoix(choix);
+        choix=new Choix(12,false,"LinkedHashSet",3);
+        dataManager.addChoix(choix);
+
+        //q4
+        libelleQ=new LibelleQuestion(4,"Which is the latest mobile version of android?","Android",14,null);
+        dataManager.addQuestion(libelleQ);
+        choix=new Choix(13,false,"3.0 (Honeycomb)",4);
+        dataManager.addChoix(choix);
+        choix=new Choix(14,true,"2.3 (Gingerbread)",4);
+        dataManager.addChoix(choix);
+        choix=new Choix(15,false,"2.6",4);
+        dataManager.addChoix(choix);
+        choix=new Choix(16,false,"2.2 (Froyo)",4);
+        dataManager.addChoix(choix);
+
+        //q5
+        libelleQ=new LibelleQuestion(5,"Web browser available in android is based on?","Android",19,null);
+        dataManager.addQuestion(libelleQ);
+        choix=new Choix(17,false,"Chrome",5);
+        dataManager.addChoix(choix);
+        choix=new Choix(18,false,"Firefox",5);
+        dataManager.addChoix(choix);
+        choix=new Choix(19,true,"Open-source webkit",5);
+        dataManager.addChoix(choix);
+        choix=new Choix(20,false,"Opera",5);
+        dataManager.addChoix(choix);
+
+        //q6
+        libelleQ=new LibelleQuestion(5,"Android doesn't support which format","Android",22,null);
+        dataManager.addQuestion(libelleQ);
+        choix=new Choix(21,false,"MP4",5);
+        dataManager.addChoix(choix);
+        choix=new Choix(22,false,"MPEG",5);
+        dataManager.addChoix(choix);
+        choix=new Choix(23,true,"AVI",5);
+        dataManager.addChoix(choix);
+        choix=new Choix(24,false,"MIDI",5);
+        dataManager.addChoix(choix);
+*/
+
+        Joueur joueur=new Joueur("Roland","Ros",0);
+        Joueur joueur1=new Joueur("Stevy","Akoa",1);
+        dataManager.addJoueur(joueur1);
+        LibelleQuestion q=dataManager.getQuestionById("JEE");
+
+       Toast.makeText(this,"ID="+q.getId()+"\n Nom="+q.getThemeJeu()+"\nLibelle choix="+q.getListChoix().get(0).getLibelle(),Toast.LENGTH_LONG).show();
         //setting statistic object
         stat=new Statistiques();
 
