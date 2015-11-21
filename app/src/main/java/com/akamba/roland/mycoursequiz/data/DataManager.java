@@ -237,6 +237,7 @@ public class DataManager {
         Cursor c=bdd.query("choix",columns, "idQuestion="+idQuestion,null,null,null, null,null);
         if(c.getCount()==0)
             return null;
+
         else
         while(c.moveToNext())
          listChoix.add(iteratorConvertCursorToChoix(c));
