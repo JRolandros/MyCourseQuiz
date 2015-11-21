@@ -1,7 +1,6 @@
 package com.akamba.roland.mycoursequiz;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,16 +13,16 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.akamba.roland.mycoursequiz.beans.CalculNotes;
+import com.akamba.roland.mycoursequiz.beans.Choix;
+import com.akamba.roland.mycoursequiz.beans.Jeu;
+import com.akamba.roland.mycoursequiz.beans.LibelleQuestion;
 import com.akamba.roland.mycoursequiz.beans.Question;
 import com.akamba.roland.mycoursequiz.beans.Statistiques;
+import com.akamba.roland.mycoursequiz.data.DataManager;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 
@@ -32,7 +31,7 @@ public class TemplateQuestion extends ActionBarActivity implements View.OnClickL
     Statistiques stat;
     String sender;
     Question query;
-    CalculNotes calculNotes;
+    Jeu jeu;
     Map<Integer,String> listQ;
     List<Question> myQuizQuestions;
     static int idRep;
@@ -55,12 +54,15 @@ public class TemplateQuestion extends ActionBarActivity implements View.OnClickL
         sender= (String) currentIntet.getStringExtra("sender");
         TextView t=(TextView)findViewById(R.id.info);
             t.setText("yo!");
-        calculNotes=new CalculNotes();
+        jeu =new Jeu();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         myQuizQuestions=new LinkedList<Question>();
         Toast.makeText(this, sender, Toast.LENGTH_LONG).show();
         nbQuestion=0;
+
         //creating data to populate questions
+
+
         if(sender.toString().equals("JEE")) {
             for (int i = 0; i < 3; i++) {
                 listQ = new LinkedHashMap<Integer, String>();
@@ -232,12 +234,12 @@ public class TemplateQuestion extends ActionBarActivity implements View.OnClickL
                 if(nbQuestion>=3)
                 {
                     if(idChecked==idRep)
-                        calculNotes.addPoint(myQuizQuestions.get(nbQuestion-1).getPoint());
+                        jeu.addPoint(myQuizQuestions.get(nbQuestion-1).getPoint());
                     //End of party
                     if(sender.toString().equals("JEE"))
-                    stat.noteJEE+=calculNotes.totalPoint;
+                    stat.noteJEE+= jeu.totalPoint;
                     else
-                    stat.noteAndroid+=calculNotes.totalPoint;
+                    stat.noteAndroid+= jeu.totalPoint;
                     Intent inten1 = new Intent();
                     inten1.putExtra("statData", stat);
                     setResult(RESULT_OK, inten1);
@@ -246,7 +248,7 @@ public class TemplateQuestion extends ActionBarActivity implements View.OnClickL
                 else
                 {
                     if(idChecked==idRep)
-                        calculNotes.addPoint(myQuizQuestions.get(nbQuestion).getPoint());
+                        jeu.addPoint(myQuizQuestions.get(nbQuestion).getPoint());
                     TextView t=(TextView)findViewById(R.id.info);
                     if(nbQuestion==2)
                         t.setText("Derniere question!");

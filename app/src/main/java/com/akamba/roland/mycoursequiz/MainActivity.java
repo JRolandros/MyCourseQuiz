@@ -48,8 +48,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         Choix choix;
         LibelleQuestion libelleQ;
-/*
-      //q1
+
+  /*     //q1
         libelleQ=new LibelleQuestion(1,"Pourquoi le framework Spring est t-il qualifie comme conteneur leger?","JEE",2,null);
         dataManager.addQuestion(libelleQ);
         choix=new Choix(1,false,"La taille des jars",1);
@@ -123,8 +123,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 */
 
         Joueur joueur=new Joueur("Roland","Ros",0);
-        Joueur joueur1=new Joueur("Stevy","Akoa",1);
-        dataManager.addJoueur(joueur1);
+        //dataManager.addJoueur(joueur);
         LibelleQuestion q=dataManager.getQuestionById("JEE");
 
        Toast.makeText(this,"ID="+q.getId()+"\n Nom="+q.getThemeJeu()+"\nLibelle choix="+q.getListChoix().get(0).getLibelle(),Toast.LENGTH_LONG).show();
