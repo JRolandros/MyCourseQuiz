@@ -176,9 +176,9 @@ public class DataManager {
         else
             c.moveToFirst(); // on retourne le premier sinon
         boolean b=false;
-        if(c.getInt(1)!=0)
+        if(c.getInt(2)!=0)
             b=true;
-        Choix choix=new Choix(c.getInt(0),b,c.getString(2),c.getInt(3));
+        Choix choix=new Choix(c.getInt(0),b,c.getString(3),c.getInt(1));
         c.close();
         return choix;
     }

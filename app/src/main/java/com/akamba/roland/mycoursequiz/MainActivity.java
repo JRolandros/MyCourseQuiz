@@ -124,9 +124,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         Joueur joueur=new Joueur("Roland","Ros",0);
         //dataManager.addJoueur(joueur);
+        Choix c=dataManager.getChoixBy2Id(5,23);
         LibelleQuestion q=dataManager.getQuestionById("JEE");
-
-       Toast.makeText(this,"ID="+q.getId()+"\n Nom="+q.getThemeJeu()+"\nLibelle choix="+q.getListChoix().get(0).getLibelle(),Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "choix :"+c.getLibelle(),Toast.LENGTH_LONG).show();
+       // Toast.makeText(this, "ID=" + q.getId() + "\n Nom=" + q.getThemeJeu() + "\nLibelle choix=" + q.getListChoix().get(0).getLibelle(), Toast.LENGTH_LONG).show();
         //setting statistic object
         stat=new Statistiques();
 
