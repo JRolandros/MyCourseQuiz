@@ -41,7 +41,7 @@ public class DataManager {
         open();
         ContentValues values=new ContentValues();
         values.put("nom",joueur.getNom());
-        values.put("prenom",joueur.getPrenom());
+        values.put("prenom", joueur.getPrenom());
         long result=bdd.insert("joueur", null, values);
         close();
         return result;
@@ -51,7 +51,7 @@ public class DataManager {
         open();
         ContentValues values=new ContentValues();
         values.put("nom",joueur.getNom());
-        values.put("prenom",joueur.getPrenom());
+        values.put("prenom", joueur.getPrenom());
         int result=bdd.update("joueur", values, "id=" + id, null);
         close();
         return result;
@@ -111,7 +111,7 @@ public class DataManager {
 
     public Jeu getJeuByStrDateAndIdJoueur(String strDate,Integer idJoueur){
         String[] columns ={"id", "totalPoint","idJoueur","themeJeu","dateJeu"};
-        Cursor c=bdd.query("joueur",columns, "dateJeu=? and idJoueur=?",new String[]{strDate,idJoueur.toString()},null,null, null,null);
+        Cursor c=bdd.query("joueur", columns, "dateJeu=? and idJoueur=?", new String[]{strDate, idJoueur.toString()}, null, null, null, null);
         return convertCursorToJeu(c);
     }
     private Jeu convertCursorToJeu(Cursor c){
@@ -127,7 +127,7 @@ public class DataManager {
         jeu.idJoueur=c.getInt(3);
         jeu.id=c.getInt(0);
         jeu.strDateJeu=c.getString(4);
-        jeu.dateJeu= new Date(jeu.strDateJeu);
+        jeu.setDateJeu(jeu.strDateJeu);
         c.close();
         return jeu;
     }
@@ -139,7 +139,7 @@ public class DataManager {
         ContentValues values=new ContentValues();
         values.put("libelle",choix.getLibelle());
         values.put("idQuestion",choix.getIdQuestion());
-        values.put("isResponse",choix.isResponse());
+        values.put("isResponse", choix.isResponse());
         long result=bdd.insert("choix", null, values);
         close();
         return result;
@@ -150,7 +150,7 @@ public class DataManager {
         ContentValues values=new ContentValues();
         values.put("libelle",choix.getLibelle());
         values.put("idQuestion",choix.getIdQuestion());
-        values.put("isResponse",choix.isResponse());
+        values.put("isResponse", choix.isResponse());
         int result=bdd.update("choix", values, "id=" + id, null);
         close();
         return result;
@@ -166,7 +166,7 @@ public class DataManager {
     public Choix getChoixBy2Id(Integer idQuestion,Integer idChoix){
         open();
         String[] columns ={"id", "idQuestion","isResponse","libelle"};
-        Cursor c=bdd.query("choix",columns, "idQuestion=? and id=?",new String[]{idQuestion.toString(),idChoix.toString()},null,null, null,null);
+        Cursor c=bdd.query("choix", columns, "idQuestion=? and id=?", new String[]{idQuestion.toString(), idChoix.toString()}, null, null, null, null);
         return convertCursorToChoix(c);
     }
     private Choix convertCursorToChoix(Cursor c){
@@ -197,59 +197,70 @@ public class DataManager {
     }
 
     public int updateQuestion(int id,LibelleQuestion question){
+        open();
         ContentValues values=new ContentValues();
         values.put("libelle",question.getLibelle());
         values.put("idResponse",question.getIdResponse());
         values.put("themeJeu", question.getThemeJeu());
-        return bdd.update("question", values, "id=" + id, null);
+        int result=bdd.update("question", values, "id=" + id, null);
+        close();
+        return result;
     }
 
     public int deleteQuestion(int id){
-        return bdd.delete("question", "id=" + id, null);
+        open();
+        int result=bdd.delete("question", "id=" + id, null);
+        close();
+        return result;
     }
 
-    public LibelleQuestion getQuestionById(String theme){
+    public List<LibelleQuestion> getQuestionsByTheme(String theme){
         open();
         String[] columns ={"id", "libelle","themeJeu","idResponse"};
         Cursor c=bdd.query("question",columns, "themeJeu LIKE \""+theme+"\"",null,null, null,null);
-        //if ((c!= null && c.getCount() > 0 && c.moveToFirst()))
-            return convertCursorToQuestion(c);
+        List<LibelleQuestion> result=convertCursorToQuestion(c);
+        close();
+        return result;
     }
-    private LibelleQuestion convertCursorToQuestion(Cursor c){
+    private List<LibelleQuestion> convertCursorToQuestion(Cursor c){
+        List<LibelleQuestion> result=new LinkedList<LibelleQuestion>();
+        LibelleQuestion question;
         //test si aucun jeu n'a été retourné
         if(c.getCount()==0)
             return null;
         else
-            c.moveToFirst(); // on retourne le premier sinon
-        LibelleQuestion question=new LibelleQuestion();
-        question.setId(c.getInt(0));
-        question.setLibelle(c.getString(1));
-        question.setThemeJeu(c.getString(2));
-        question.setIdResponse(c.getInt(3));
-        question.setListChoix(getChoixQuestionById(question.getId()));
+            while(c.moveToNext())
+            {
+                question=new LibelleQuestion();
+                question.setId(c.getInt(0));
+                question.setLibelle(c.getString(1));
+                question.setThemeJeu(c.getString(2));
+                question.setIdResponse(c.getInt(3));
+                question.setListChoix(getChoixQuestionById(c.getInt(0)));
+                result.add(question);
+            }
+
         c.close();
-        return question;
+        return result;
     }
 
-    public List<Choix> getChoixQuestionById(Integer idQuestion){
+    public List<Choix> getChoixQuestionById(int idQuestion){
         List<Choix> listChoix= new LinkedList<Choix>();
         String[] columns ={"id", "idQuestion","isResponse","libelle"};
         Cursor c=bdd.query("choix",columns, "idQuestion="+idQuestion,null,null,null, null,null);
+
         if(c.getCount()==0)
             return null;
-
         else
         while(c.moveToNext())
-         listChoix.add(iteratorConvertCursorToChoix(c));
+        {
+            boolean b=false;
+            if(c.getInt(2)!=0)
+                b=true;
+            listChoix.add(new Choix(c.getInt(0),b,c.getString(3),c.getInt(1)));
+        }
         c.close();
         return listChoix;
-    }
-    private Choix iteratorConvertCursorToChoix(Cursor c){
-        boolean b=false;
-        if(c.getInt(1)!=0)
-            b=true;
-        Choix choix=new Choix(c.getInt(0),b,c.getString(2),c.getInt(3));
-        return choix;
     }
     //endregion
 }

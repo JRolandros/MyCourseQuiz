@@ -1,5 +1,6 @@
 package com.akamba.roland.mycoursequiz.beans;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -13,8 +14,12 @@ public class LibelleQuestion {
     private int idResponse;
 
 //TODO penser à changer cette classe en Question quand j'aurai supprimé celle actuelle.
-    public LibelleQuestion(){}
+    public LibelleQuestion(){
+        listChoix=new LinkedList<Choix>();
+    }
+
     public LibelleQuestion(int id, String libelle, String themeJeu, int idResponse, List<Choix> listChoix) {
+        listChoix=new LinkedList<Choix>();
         this.id = id;
         this.libelle = libelle;
         this.listChoix = listChoix;
@@ -39,7 +44,7 @@ public class LibelleQuestion {
     }
 
     public List<Choix> getListChoix() {
-        return listChoix;
+        return this.listChoix;
     }
 
     public void setListChoix(List<Choix> listChoix) {

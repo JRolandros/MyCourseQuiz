@@ -12,12 +12,12 @@ public class Jeu {
     public int totalPoint;
     public int idJoueur;
     public String themeJeu;
-    public Date dateJeu;
+    private Date dateJeu;
     public String strDateJeu;
 
     public Jeu(){
         totalPoint=0;
-        dateJeu=new Date(Time.getCurrentTimezone());
+        dateJeu=new Date(System.currentTimeMillis());
         idJoueur=0;
         themeJeu="";
         strDateJeu=dateJeu.toString();
@@ -25,5 +25,8 @@ public class Jeu {
 
     public void addPoint(int point){
         totalPoint+=point;
+    }
+    public void setDateJeu(String strDateJeu){
+        this.dateJeu= new Date(strDateJeu);
     }
 }

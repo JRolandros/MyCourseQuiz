@@ -30,12 +30,13 @@ public class TemplateQuestion extends ActionBarActivity implements View.OnClickL
     Intent currentIntet;
     Statistiques stat;
     String sender;
-    Question query;
+    //Question query;
+    DataManager dataManager;
     Jeu jeu;
-    Map<Integer,String> listQ;
-    List<Question> myQuizQuestions;
+    //Map<Integer,String> listQ;
+    static List<LibelleQuestion> myQuizQuestions;
     static int idRep;
-    static int nbQuestion;
+    static int nbQuestions;
     int idChecked;
     RadioButton rb1;
     RadioButton rb2 ;
@@ -55,74 +56,25 @@ public class TemplateQuestion extends ActionBarActivity implements View.OnClickL
         TextView t=(TextView)findViewById(R.id.info);
             t.setText("yo!");
         jeu =new Jeu();
+        //permet d'activer le bouton retour
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        myQuizQuestions=new LinkedList<Question>();
+
+        //myQuizQuestions=new LinkedList<LibelleQuestion>();
         Toast.makeText(this, sender, Toast.LENGTH_LONG).show();
-        nbQuestion=0;
+        nbQuestions=0;
 
         //creating data to populate questions
+        dataManager=new DataManager(this);
 
 
         if(sender.toString().equals("JEE")) {
-            for (int i = 0; i < 3; i++) {
-                listQ = new LinkedHashMap<Integer, String>();
-                if (i == 0) {
-                    listQ.put(1, "La taille des jars");
-                    listQ.put(2, "La faible charge de developpement");
-                    listQ.put(3, "La possibilite de deployer une application sur le conteneur de servlet");
-                    listQ.put(4, "En oppisition avec la EJB");
-                    String libelle = "Pourquoi le framework Spring est t-il qualifie comme conteneur leger";
-                    myQuizQuestions.add(new Question(listQ, 2, libelle, 10));
-                }
-                if (i == 1) {
-                    listQ.put(1, "@Autowired");
-                    listQ.put(2, "@Value");
-                    listQ.put(3, "@Controller");
-                    listQ.put(4, "@Resource");
-                    String libelle = "Pour qu'un attribut soit instancie avec un bean on doit utiliser l'annotation?";
-                    myQuizQuestions.add(new Question(listQ, 4, libelle, 20));
-                }
-                if (i == 2) {
-                    listQ.put(1, "TreeTable");
-                    listQ.put(2, "HashTable");
-                    listQ.put(3, "LinkedHashMap");
-                    listQ.put(4, "LinkedHashSet");
-                    String libelle = "Pour grader l'ordre d'insertion des cles, on doit utiliser la classe";
-                    myQuizQuestions.add(new Question(listQ, 3, libelle, 5));
-                }
-            }
+            myQuizQuestions=dataManager.getQuestionsByTheme("JEE");
         }
         else //sender==Droid
         {
-
-            for (int i = 0; i < 3; i++) {
-                listQ = new LinkedHashMap<Integer, String>();
-                if (i == 0) {
-                    listQ.put(1, "3.0 (Honeycomb)");
-                    listQ.put(2, "2.3 (Gingerbread)");
-                    listQ.put(3, "2.6");
-                    listQ.put(4, "2.2 (Froyo)");
-                    String libelle = "Which is the latest mobile version of android?";
-                    myQuizQuestions.add(new Question(listQ, 2, libelle, 10));
-                }
-                if (i == 1) {
-                    listQ.put(1, "Chrome");
-                    listQ.put(2, "Firefox");
-                    listQ.put(3, "Open-source webkit");
-                    listQ.put(4, "Opera");
-                    String libelle = "Web browser available in android is based on?";
-                    myQuizQuestions.add(new Question(listQ, 3, libelle, 20));
-                }
-                if (i == 2) {
-                    listQ.put(1, "MP4");
-                    listQ.put(2, "MPEG");
-                    listQ.put(3, "AVI");
-                    listQ.put(4, "MIDI");
-                    String libelle = "Android doesn't support which format";
-                    myQuizQuestions.add(new Question(listQ, 2, libelle, 5));
-                }
-            }
+           myQuizQuestions=dataManager.getQuestionsByTheme("Android");
         }
+        nbQuestions=myQuizQuestions.size()-1;
 
         //managing radio button events
         RadioGroup rg = (RadioGroup) findViewById(R.id.rGroup);
@@ -144,13 +96,26 @@ public class TemplateQuestion extends ActionBarActivity implements View.OnClickL
          lib=(TextView)findViewById(R.id.libelleQ);
 
         //populating view elements for the beginning party
-        rb1.setText(myQuizQuestions.get(0).getListChoix().get(1));
-        rb2.setText(myQuizQuestions.get(0).getListChoix().get(2));
-        idRep=rb2.getId();
-        rb3.setText(myQuizQuestions.get(0).getListChoix().get(4));
-        rb4.setText(myQuizQuestions.get(0).getListChoix().get(3));
-        lib.setText(myQuizQuestions.get(0).getLibelle());
-        nbQuestion++;
+        int d=nbQuestions;
+        String g=myQuizQuestions.get(0).getListChoix().get(0).getLibelle();
+        rb1.setText(myQuizQuestions.get(nbQuestions).getListChoix().get(0).getLibelle());
+        if(myQuizQuestions.get(nbQuestions).getListChoix().get(0).isResponse())
+            idRep=rb1.getId();
+
+        rb2.setText(myQuizQuestions.get(nbQuestions).getListChoix().get(1).getLibelle());
+            if(myQuizQuestions.get(nbQuestions).getListChoix().get(1).isResponse())
+                idRep=rb2.getId();
+
+        rb3.setText(myQuizQuestions.get(nbQuestions).getListChoix().get(2).getLibelle());
+            if(myQuizQuestions.get(nbQuestions).getListChoix().get(2).isResponse())
+                idRep=rb3.getId();
+
+        rb4.setText(myQuizQuestions.get(nbQuestions).getListChoix().get(3).getLibelle());
+            if(myQuizQuestions.get(nbQuestions).getListChoix().get(3).isResponse())
+                idRep=rb4.getId();
+
+        lib.setText(myQuizQuestions.get(nbQuestions).getLibelle());
+        nbQuestions--;
 
         //registing event listner
         v.setOnClickListener(this);
@@ -231,10 +196,10 @@ public class TemplateQuestion extends ActionBarActivity implements View.OnClickL
         switch (view.getId()) {
             case R.id.btnValider:
 
-                if(nbQuestion>=3)
+                if(nbQuestions<0)
                 {
                     if(idChecked==idRep)
-                        jeu.addPoint(myQuizQuestions.get(nbQuestion-1).getPoint());
+                        jeu.addPoint(10);
                     //End of party
                     if(sender.toString().equals("JEE"))
                     stat.noteJEE+= jeu.totalPoint;
@@ -248,9 +213,9 @@ public class TemplateQuestion extends ActionBarActivity implements View.OnClickL
                 else
                 {
                     if(idChecked==idRep)
-                        jeu.addPoint(myQuizQuestions.get(nbQuestion).getPoint());
+                        jeu.addPoint(10);
                     TextView t=(TextView)findViewById(R.id.info);
-                    if(nbQuestion==2)
+                    if(nbQuestions==1)
                         t.setText("Derniere question!");
                     else
                         t.setText("");
@@ -262,13 +227,24 @@ public class TemplateQuestion extends ActionBarActivity implements View.OnClickL
                     lib=(TextView)findViewById(R.id.libelleQ);
 
                     //charging next question and populating view elements
-                    rb1.setText(myQuizQuestions.get(nbQuestion).getListChoix().get(1));
-                    rb2.setText(myQuizQuestions.get(nbQuestion).getListChoix().get(2));
-                    idRep=myQuizQuestions.get(nbQuestion).getIdReponse();
-                    rb3.setText(myQuizQuestions.get(nbQuestion).getListChoix().get(3));
-                    rb4.setText(myQuizQuestions.get(nbQuestion).getListChoix().get(4));
-                    lib.setText(myQuizQuestions.get(nbQuestion).getLibelle());
-                    nbQuestion++;
+                    rb1.setText(myQuizQuestions.get(nbQuestions).getListChoix().get(0).getLibelle());
+                    if(myQuizQuestions.get(nbQuestions).getListChoix().get(0).isResponse())
+                        idRep=rb1.getId();
+
+                    rb2.setText(myQuizQuestions.get(nbQuestions).getListChoix().get(1).getLibelle());
+                    if(myQuizQuestions.get(nbQuestions).getListChoix().get(1).isResponse())
+                        idRep=rb2.getId();
+
+                    rb3.setText(myQuizQuestions.get(nbQuestions).getListChoix().get(2).getLibelle());
+                    if(myQuizQuestions.get(nbQuestions).getListChoix().get(2).isResponse())
+                        idRep=rb3.getId();
+
+                    rb4.setText(myQuizQuestions.get(nbQuestions).getListChoix().get(3).getLibelle());
+                    if(myQuizQuestions.get(nbQuestions).getListChoix().get(3).isResponse())
+                        idRep=rb4.getId();
+
+                    lib.setText(myQuizQuestions.get(nbQuestions).getLibelle());
+                    nbQuestions--;
 
                     switch (idRep){
                         case 1:
