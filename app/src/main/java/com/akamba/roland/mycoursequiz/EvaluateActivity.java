@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
@@ -20,6 +21,10 @@ public class EvaluateActivity extends ActionBarActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_evaluate);
+
+        ImageView img=(ImageView)findViewById(R.id.esigLogo);
+        img.setImageResource(R.drawable.esiglogo);
+
         Intent child= getIntent();
         stat= (Statistiques) child.getExtras().getSerializable("statData");
 

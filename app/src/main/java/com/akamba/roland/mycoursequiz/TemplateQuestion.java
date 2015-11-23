@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -49,6 +50,9 @@ public class TemplateQuestion extends ActionBarActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_template_question);
 
+        ImageView img=(ImageView)findViewById(R.id.esigLogo);
+        img.setImageResource(R.drawable.esiglogo);
+        
         //getting the context from the sender
         currentIntet=getIntent();
         stat= (Statistiques) currentIntet.getExtras().getSerializable("statData");

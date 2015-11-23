@@ -44,7 +44,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        ImageView img=(ImageView)findViewById(R.id.esigLogo);
+        img.setImageResource(R.drawable.esiglogo);
         DataManager dataManager=new DataManager(this);
         //dataManager.open();
 
@@ -164,6 +165,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         //noinspection SimplifiableIfStatement
         switch (id){
             case 11:
+                stat.nbTentativeJEE++;
                 Intent JEEIntent= new Intent(this,TemplateQuestion.class);
                 JEEIntent.putExtra("statData",stat);
                 JEEIntent.putExtra("sender","JEE");
@@ -171,6 +173,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 //Toast.makeText(this,"JEE"+item.getTitle(),Toast.LENGTH_LONG).show();
                 break;
             case 12:
+                stat.nbTentativeDroid++;
                 Intent droidIntent= new Intent(this,TemplateQuestion.class);
                 droidIntent.putExtra("statData",stat);
                 droidIntent.putExtra("sender","DROID");
@@ -183,7 +186,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 startActivityForResult(evalInten, 45);
                 break;
             case 3:
-                Toast.makeText(this,"Statistique\n Note: "+stat.getNote()+"\n Note Android: "+stat.noteAndroid+"\nNote JEE: "+stat.noteJEE+"\n Tentative :" + stat.getNbTentatives()+"\n Tentative Android :" + stat.nbTentativeDroid+"\n Tentative Android :" + stat.nbTentativeJEE,Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"Statistique\n==============\n"+stat.Appreciation(noteMax)+"\n************\nNote: "+stat.getNote()+"\n Note Android: "+stat.noteAndroid+"\nNote JEE: "+stat.noteJEE+"\n Tentative :" + stat.getNbTentatives()+"\n Tentative Android :" + stat.nbTentativeDroid+"\n Tentative Android :" + stat.nbTentativeJEE,Toast.LENGTH_LONG).show();
                 break;
             case 4:
                 Intent about=new Intent(this,AboutActivity.class);
