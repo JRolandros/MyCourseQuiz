@@ -10,7 +10,6 @@ import com.akamba.roland.mycoursequiz.beans.Jeu;
 import com.akamba.roland.mycoursequiz.beans.Joueur;
 import com.akamba.roland.mycoursequiz.beans.LibelleQuestion;
 
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,6 +21,7 @@ public class DataManager {
     private MyBDD my_bdd;
 
     public DataManager(Context context){
+        //context.deleteDatabase("MyCourseQuiz.db");
         //creation de la base avec ses tables
         my_bdd=new MyBDD(context,"MyCourseQuiz.db",null,1);
 
@@ -36,55 +36,6 @@ public class DataManager {
         public void close(){
             bdd.close();
         }
-    //region Manage joueur
-    public long addJoueur(Joueur joueur){
-        open();
-        ContentValues values=new ContentValues();
-        values.put("nom",joueur.getNom());
-        values.put("prenom", joueur.getPrenom());
-        long result=bdd.insert("joueur", null, values);
-        close();
-        return result;
-    }
-
-    public int updateJoueur(int id,Joueur joueur){
-        open();
-        ContentValues values=new ContentValues();
-        values.put("nom",joueur.getNom());
-        values.put("prenom", joueur.getPrenom());
-        int result=bdd.update("joueur", values, "id=" + id, null);
-        close();
-        return result;
-    }
-
-    public int deleteJoueur(int id){
-        open();
-        int result=bdd.delete("joueur", "id=" + id, null);
-        close();
-        return result;
-    }
-
-    public Joueur getJoueurByName(String nom){
-        open();
-        Cursor c=bdd.query("joueur",new String[]{"id","nom","prenom"}, "nom LIKE \""+nom+"\"",null,null,null,null);
-        Joueur joueur=convertCursorToJoueur(c);
-        close();
-        return joueur;
-    }
-    private Joueur convertCursorToJoueur(Cursor c){
-        //test si aucun joueur n'a été retourné
-        if(c.getCount()==0)
-            return null;
-        else
-            c.moveToFirst(); // on retourne le premier sinon
-        Joueur joueur=new Joueur();
-        joueur.setId(c.getInt(0));
-        joueur.setNom(c.getString(1));
-        joueur.setPrenom(c.getString(2));
-        c.close();
-        return joueur;
-    }
-    //endregion
 
     //region Manage jeu
     public long addJeu(Jeu jeu){
@@ -261,6 +212,56 @@ public class DataManager {
         }
         c.close();
         return listChoix;
+    }
+    //endregion
+
+    //region Manage users
+    public Joueur insertJoueur (Joueur queryValues){
+        open();
+        ContentValues values = new ContentValues();
+        values.put("email", queryValues.getEmail());
+        values.put("password", queryValues.getPassword());
+        values.put("pseudo",queryValues.getPseudo());
+
+        queryValues.setId((int)bdd.insert("joueur", null, values));
+        bdd.close();
+        return queryValues;
+    }
+
+
+    public int updateJoueurPassword (Joueur queryValues){
+        open();
+        ContentValues values = new ContentValues();
+        values.put("email", queryValues.getEmail());
+        values.put("password", queryValues.getPassword());
+        values.put("pseudo", queryValues.getPseudo());
+
+        queryValues.setId((int) bdd.insert("joueur", null, values));
+        bdd.close();
+        return bdd.update("joueur", values, "id = ?", new String[] {String.valueOf(queryValues.getId())});
+    }
+
+    public Joueur getJoueur (String email){
+        String query = "Select id, password, pseudo from joueur where email ='"+email+"'";
+        Joueur myUser = new Joueur(email,"","",0);
+        open();
+        Cursor cursor = bdd.rawQuery(query, null);
+        if (cursor.moveToFirst()){
+            do {
+                myUser.setId((int)cursor.getLong(0));
+                myUser.setPassword(cursor.getString(1));
+                myUser.setPseudo(cursor.getString(2));
+            } while (cursor.moveToNext());
+        }
+        return myUser;
+    }
+
+
+    public int deleteJoueur(int id){
+        open();
+        int result=bdd.delete("joueur", "id=" + id, null);
+        close();
+        return result;
     }
     //endregion
 }

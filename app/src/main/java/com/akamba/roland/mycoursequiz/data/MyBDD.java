@@ -16,7 +16,7 @@ public class MyBDD extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE joueur(id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT NOT NULL, prenom TEXT);");
+        db.execSQL("CREATE TABLE joueur(id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL, password TEXT NOT NULL, pseudo TEXT);");
         db.execSQL("CREATE TABLE jeu(id INTEGER PRIMARY KEY AUTOINCREMENT, totalPoint INTEGER, idJoueur INTEGER NOT NULL, themeJeu TEXT NOT NULL, dateJeu TEXT NOT NULL);");
         db.execSQL("CREATE TABLE choix(id INTEGER PRIMARY KEY AUTOINCREMENT, isResponse flag INTEGER,libelle TEXT NOT NULL, idQuestion INTEGER NOT NULL);");
         db.execSQL("CREATE TABLE question(id INTEGER PRIMARY KEY AUTOINCREMENT, libelle TEXT NOT NULL, themeJeu TEXT NOT NULL, idResponse INTEGER NOT NULL);");

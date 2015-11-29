@@ -11,6 +11,7 @@ public class InitMyBDD {
     private static DataManager dataManager;
 
     public InitMyBDD(DataManager dataManager){
+
         this.dataManager=dataManager;
         if(dataManager.getQuestionsByTheme("JEE")==null){
             populateTableJoueur();
@@ -22,8 +23,8 @@ public class InitMyBDD {
     }
 
     private void populateTableJoueur(){
-        Joueur joueur=new Joueur("Roland","Ros",0);
-        dataManager.addJoueur(joueur);
+        Joueur joueur=new Joueur("roland@yahoo.fr","roland","ros", 0);
+        dataManager.insertJoueur(joueur);
         //TODO add other joueur here
     }
     private  void populateTableQuestion(){
