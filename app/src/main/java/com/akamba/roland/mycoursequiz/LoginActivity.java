@@ -34,6 +34,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.akamba.roland.mycoursequiz.Utilities.QuizConnectionRequest;
+import com.akamba.roland.mycoursequiz.Utilities.WebServices;
 import com.akamba.roland.mycoursequiz.beans.Joueur;
 import com.akamba.roland.mycoursequiz.data.DataManager;
 
@@ -79,6 +81,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+        //TextView connect = (TextView) findViewById(R.id.connect);
+
+        QuizConnectionRequest quizConnection=QuizConnectionRequest.getInstance(this);
+        String url="http://freegeoip.net/xml/173.194.40.184/";
+        WebServices webServices=new WebServices(this);
+        webServices.execute(url);
+        //connect.setText("connection"+webServices.result);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {

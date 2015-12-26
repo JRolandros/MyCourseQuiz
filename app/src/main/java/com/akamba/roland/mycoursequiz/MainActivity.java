@@ -16,6 +16,7 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.akamba.roland.mycoursequiz.Utilities.ExpandableListAdapter;
+import com.akamba.roland.mycoursequiz.Utilities.MyLocation;
 import com.akamba.roland.mycoursequiz.beans.Choix;
 import com.akamba.roland.mycoursequiz.beans.Joueur;
 import com.akamba.roland.mycoursequiz.beans.LibelleQuestion;
@@ -39,6 +40,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     static int btnApro=46;
     int btnQuit=47;
     int btnStatis=48;
+    double lo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         ImageView img=(ImageView)findViewById(R.id.esigLogo);
         img.setImageResource(R.drawable.esiglogo);
         DataManager dataManager=new DataManager(this);
+        //this get the street number and its name such as 2 avenue du Roi as a string
+        MyLocation.getLocationAddressName(this).get(0).getAddressLine(0);
+        //this get the locaty name (town) and the postale code such as 76000 Rouen as a string
+        MyLocation.getLocationAddressName(this).get(0).getAddressLine(1);
+        //this get the country name as a string
+        MyLocation.getLocationAddressName(this).get(0).getAddressLine(2);
+        lo=MyLocation.getMyLocation(this).getLatitude();
         //dataManager.open();
 
         //this is used to initialize my database if it's not done yet.
