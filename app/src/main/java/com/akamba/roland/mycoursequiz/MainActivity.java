@@ -13,10 +13,12 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akamba.roland.mycoursequiz.Utilities.ExpandableListAdapter;
 import com.akamba.roland.mycoursequiz.Utilities.MyLocation;
+import com.akamba.roland.mycoursequiz.Utilities.QuizConnectionRequest;
 import com.akamba.roland.mycoursequiz.beans.Choix;
 import com.akamba.roland.mycoursequiz.beans.Joueur;
 import com.akamba.roland.mycoursequiz.beans.LibelleQuestion;
@@ -31,7 +33,10 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener{
 
+    //region variables
     static Statistiques stat;
+    Joueur joueur;
+    DataManager dataManager;
     int noteMax=30;
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
@@ -41,25 +46,40 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     int btnQuit=47;
     int btnStatis=48;
     double lo;
+    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //get intent
+        Intent currentIntet=getIntent();
+
+        //get login user sent by the login activity
+        joueur= (Joueur) currentIntet.getExtras().getSerializable("loginUser");
+
+        //get user's location
+        getMyPosition();
+
+        //display user info
+        TextView userTv=(TextView)findViewById(R.id.userInfo);
+        userTv.setText("User: "+joueur.getEmail());
+        TextView connectionTv=(TextView)findViewById(R.id.connectionInfo);
+        connectionTv.setText("Location :"+joueur.getCity());
+        //set my app logo esig
         ImageView img=(ImageView)findViewById(R.id.esigLogo);
         img.setImageResource(R.drawable.esiglogo);
-        DataManager dataManager=new DataManager(this);
-        //this get the street number and its name such as 2 avenue du Roi as a string
-        MyLocation.getLocationAddressName(this).get(0).getAddressLine(0);
-        //this get the locaty name (town) and the postale code such as 76000 Rouen as a string
-        MyLocation.getLocationAddressName(this).get(0).getAddressLine(1);
-        //this get the country name as a string
-        MyLocation.getLocationAddressName(this).get(0).getAddressLine(2);
-        lo=MyLocation.getMyLocation(this).getLatitude();
+
+        //to delete database
+        //this.deleteDatabase("MyCourseQuiz.db");
+
+        //create database manager
+        dataManager=new DataManager(this);
+
         //dataManager.open();
 
         //this is used to initialize my database if it's not done yet.
-
         InitMyBDD initMyBDD=new InitMyBDD(dataManager);
 
         //setting statistic object
@@ -296,6 +316,39 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             default:
                 Toast.makeText(this, "Nothing detected....", Toast.LENGTH_LONG).show();
                 break;
+        }
+
+    }
+
+    // get th user location
+    public void getMyPosition(){
+        String address;
+        String city;
+        //checked connection availability
+        QuizConnectionRequest quizConnection=QuizConnectionRequest.getInstance(this);
+
+        if(quizConnection.isOnline())
+        {
+            //this get the street number and its name such as 2 avenue du Roi as a string
+            address=MyLocation.getLocationAddressName(this).get(0).getAddressLine(0)+" ";
+            //this get the locaty name (town) and the postale code such as 76000 Rouen as a string
+            address+=MyLocation.getLocationAddressName(this).get(0).getAddressLine(1)+" ";
+            //this get the country name as a string
+           address+= MyLocation.getLocationAddressName(this).get(0).getAddressLine(2);
+
+            //get user's city
+            city=MyLocation.getLocationAddressName(this).get(0).getAddressLine(1);
+            double lat=MyLocation.getMyLocation(this).getLatitude();
+            double lon=MyLocation.getMyLocation(this).getLongitude();
+            joueur.setLatitude(lat);
+            joueur.setLongitude(lon);
+            joueur.setAddress(address);
+            joueur.setCity(city);
+
+            //TODO create an update method to do this properly
+            //dataManager.deleteJoueur(joueur.getId());
+            //dataManager.insertJoueur(joueur);
+
         }
 
     }

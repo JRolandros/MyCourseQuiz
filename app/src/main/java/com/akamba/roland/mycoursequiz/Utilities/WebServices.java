@@ -18,29 +18,36 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.xml.bind.*;
 
 /**
  * Created by roland on 08/12/2015.
  */
 public class WebServices extends AsyncTask<String, Void, String> {
 
+    //get main activity instance
     private Activity myActivity;
-    public WebServices(Activity activity){
+
+    //view element id
+    int webContentId;
+
+    //constructor
+    public WebServices(Activity activity,int id){
         this.myActivity=activity;
+        webContentId=id;
     }
-    public String result=null;
+
+    //method executed at the end of the doInBackground thread
     @Override
     protected void onPostExecute(String stream_url)
     {
-        TextView tv= (TextView)myActivity.findViewById(R.id.connect);
+        TextView tv= (TextView)myActivity.findViewById(webContentId);
         tv.setText(stream_url);
-        //result=stream_url;
     }
+
+    // run in background to execute the web service. this method is called when calling the execute() method in the instance of this class
     @Override
     protected String doInBackground(String... params) {
         String url=params[0];
-
         return executerQuery(url);
     }
 

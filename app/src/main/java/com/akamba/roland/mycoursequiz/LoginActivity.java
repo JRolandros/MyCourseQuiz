@@ -83,11 +83,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         populateAutoComplete();
         //TextView connect = (TextView) findViewById(R.id.connect);
 
-        QuizConnectionRequest quizConnection=QuizConnectionRequest.getInstance(this);
-        String url="http://freegeoip.net/xml/173.194.40.184/";
-        WebServices webServices=new WebServices(this);
-        webServices.execute(url);
-        //connect.setText("connection"+webServices.result);
+
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -367,6 +363,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 finish();
 
                 Intent myIntent = new Intent(LoginActivity.this,MainActivity.class);
+                myIntent.putExtra("loginUser",user);
                 LoginActivity.this.startActivity(myIntent);
             } else {
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {

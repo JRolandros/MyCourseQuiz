@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.akamba.roland.mycoursequiz.Utilities.WebServices;
 
 
 public class AboutActivity extends ActionBarActivity {
@@ -14,15 +17,20 @@ public class AboutActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
+        setContentView(R.layout.about);
         ImageView img=(ImageView)findViewById(R.id.myPhoto);
         img.setImageResource(R.drawable.vsprofiltn_);
 
+        //show back button and active it
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setIcon(android.R.color.transparent);
-        //getSupportActionBar().setDisplayUseLogoEnabled(true);
-        //ab.setHomeButtonEnabled(true);
-       // ab.setDisplayHomeAsUpEnabled(true);
+
+
+        //id of the view which will set the web content from a web service
+        int id=R.id.w;
+        String url="http://freegeoip.net/xml/173.194.40.184/";
+        //get the web service content and display it
+        WebServices webServices=new WebServices(this,id);
+        webServices.execute(url);
     }
 
     @Override
