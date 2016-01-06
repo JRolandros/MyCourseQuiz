@@ -9,7 +9,7 @@ public class Statistiques implements Serializable{
     public float evalTotal;
     public int noteJEE;
     public int noteAndroid;
-
+    public boolean isGoodResult=false;
     public int nbTentativeJEE;
     public int nbTentativeDroid;
     public int getNbTentatives(){
@@ -27,6 +27,7 @@ public class Statistiques implements Serializable{
     }
 
     public String Appreciation(int maxResult){
+        isGoodResult=false;
         int note=0;
         if(getNbTentatives()!=0)
         note=getNote()/getNbTentatives();
@@ -40,8 +41,11 @@ public class Statistiques implements Serializable{
             return "Bien, le résultat est satisfaisant";
         if(note>=((2.0/3)*maxResult)&&note<((3.0/4)*maxResult))
             return "Très bien, vous avez atteint un record impressionnant!";
-        if(note>=((3.0/4)*maxResult) && note<maxResult)
-            return "Excelent, votre record est très impressionnant!";
-        return "Parfait! Rien à rajouter à vos performances.";
+        if(note>=((3.0/4)*maxResult) && note<maxResult){
+            isGoodResult=true;
+            return "Excelent, votre record est très impressionnant!\n Choisissez un contact à qui envoyer un billet de cinéma";
+        }
+        isGoodResult=true;
+        return "Parfait! Rien à rajouter à vos performances.\nChoisissez un contact à qui envoyer un billet de cinéma";
     }
 }

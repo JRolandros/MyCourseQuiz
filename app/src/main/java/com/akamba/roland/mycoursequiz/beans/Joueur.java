@@ -12,21 +12,30 @@ public class Joueur implements Serializable {
     private double longitude;
     private double latitude;
     private String address;
+    private Statistiques myStat;
 
     private String city;
 
     private int id;
 
-    public Joueur(){}
+    public Joueur(){
+        myStat=new Statistiques();
+    }
 
     public Joueur(String email, String password, String pseudo, int id) {
         this.email = email;
-
+        myStat=new Statistiques();
         this.password=password;
         this.pseudo = pseudo;
         this.id = id;
     }
 
+    public Statistiques getMyStat(){
+        return myStat;
+    }
+    public void setMyStat(Statistiques myStat){
+        this.myStat=myStat;
+    }
     public String getCity() {
         return city;
     }

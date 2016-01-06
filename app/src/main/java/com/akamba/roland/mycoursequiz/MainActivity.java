@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akamba.roland.mycoursequiz.Utilities.ExpandableListAdapter;
+import com.akamba.roland.mycoursequiz.Utilities.MapsFrag;
 import com.akamba.roland.mycoursequiz.Utilities.MyLocation;
 import com.akamba.roland.mycoursequiz.Utilities.QuizConnectionRequest;
 import com.akamba.roland.mycoursequiz.beans.Choix;
@@ -34,9 +35,10 @@ import java.util.List;
 public class MainActivity extends ActionBarActivity implements View.OnClickListener{
 
     //region variables
-    static Statistiques stat;
+    //static Statistiques stat;
     Joueur joueur;
     DataManager dataManager;
+    MyLocation myLocation;
     int noteMax=30;
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
@@ -60,6 +62,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         joueur= (Joueur) currentIntet.getExtras().getSerializable("loginUser");
 
         //get user's location
+        myLocation=new MyLocation(this);
         getMyPosition();
 
         //display user info
@@ -83,17 +86,20 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         InitMyBDD initMyBDD=new InitMyBDD(dataManager);
 
         //setting statistic object
-        stat=new Statistiques();
+        //stat=new Statistiques();
 
+        //region populating view elements
         Button btnEvaluate= (Button)findViewById(R.id.btnEvaluer);
         Button btnApropos= (Button)findViewById(R.id.btnAPropos);
         Button btnStatistic= (Button)findViewById(R.id.btnStat);
         Button btnQuitter= (Button)findViewById(R.id.btnQuitter);
+        TextView mapView= (TextView)findViewById(R.id.connectionInfo);
 
         btnEvaluate.setOnClickListener(this);
         btnApropos.setOnClickListener(this);
         btnQuitter.setOnClickListener(this);
         btnStatistic.setOnClickListener(this);
+        mapView.setOnClickListener(this);
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expList);
 
@@ -151,16 +157,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 if((listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition))
                         =="JEE"){
                     Intent inten=new Intent(getApplicationContext(),TemplateQuestion.class);
-                    stat.nbTentativeJEE++;
-                    inten.putExtra("statData",stat);
+                    joueur.getMyStat().nbTentativeJEE++;
+                    inten.putExtra("loginUser",joueur);
                     inten.putExtra("sender","JEE");
-                    startActivityForResult(inten, 11);
+
+                   startActivityForResult(inten, 11);
                 }
                 else
                 {
                     Intent inten=new Intent(getApplicationContext(),TemplateQuestion.class);
-                    stat.nbTentativeDroid++;
-                    inten.putExtra("statData",stat);
+                    joueur.getMyStat().nbTentativeDroid++;
+                    inten.putExtra("loginUser",joueur);
                     inten.putExtra("sender","DROID");
                     startActivityForResult(inten, 12);
                 }
@@ -168,8 +175,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 return false;
             }
         });
-    }
 
+        //endregion
+    }
+//region override methods
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -179,6 +188,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         menu.add(Menu.NONE, 2, Menu.NONE, "Evaluer");
         menu.add(Menu.NONE, 3, Menu.NONE, "Statistique");
         menu.add(Menu.NONE, 4, Menu.NONE, "A propos");
+        menu.add(Menu.NONE, 6, Menu.NONE, "Mes contats");
         menu.add(Menu.NONE, 5, Menu.NONE, "Quitter");
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
@@ -193,36 +203,41 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         //noinspection SimplifiableIfStatement
         switch (id){
-            case 11:
-                stat.nbTentativeJEE++;
+            case 11: //JEE quiz
+                joueur.getMyStat().nbTentativeJEE++;
                 Intent JEEIntent= new Intent(this,TemplateQuestion.class);
-                JEEIntent.putExtra("statData",stat);
+                JEEIntent.putExtra("loginUser",joueur);
                 JEEIntent.putExtra("sender","JEE");
                 startActivityForResult(JEEIntent,11);
                 //Toast.makeText(this,"JEE"+item.getTitle(),Toast.LENGTH_LONG).show();
                 break;
-            case 12:
-                stat.nbTentativeDroid++;
+            case 12: //android quiz
+                joueur.getMyStat().nbTentativeDroid++;
                 Intent droidIntent= new Intent(this,TemplateQuestion.class);
-                droidIntent.putExtra("statData",stat);
+                droidIntent.putExtra("loginUser",joueur);
                 droidIntent.putExtra("sender","DROID");
                 startActivityForResult(droidIntent,12);
                 //Toast.makeText(this,"Android"+item.getTitle(),Toast.LENGTH_LONG).show();
                 break;
-            case 2:
+            case 2: //Evaluer
                 Intent evalInten=new Intent(this,EvaluateActivity.class);
-                evalInten.putExtra("statData",stat);
+                evalInten.putExtra("loginUser",joueur);
                 startActivityForResult(evalInten, 45);
                 break;
-            case 3:
-                Toast.makeText(this,"Statistique\n==============\n"+stat.Appreciation(noteMax)+"\n************\nNote: "+stat.getNote()+"\n Note Android: "+stat.noteAndroid+"\nNote JEE: "+stat.noteJEE+"\n Tentative :" + stat.getNbTentatives()+"\n Tentative Android :" + stat.nbTentativeDroid+"\n Tentative Android :" + stat.nbTentativeJEE,Toast.LENGTH_LONG).show();
+            case 3: //Statistique
+                Toast.makeText(this,"Statistique\n==============\n"+joueur.getMyStat().Appreciation(noteMax)+"\n************\nNote: "+joueur.getMyStat().getNote()+"\n Note Android: "+joueur.getMyStat().noteAndroid+"\nNote JEE: "+joueur.getMyStat().noteJEE+"\n Tentative :" + joueur.getMyStat().getNbTentatives()+"\n Tentative Android :" + joueur.getMyStat().nbTentativeDroid+"\n Tentative Android :" + joueur.getMyStat().nbTentativeJEE,Toast.LENGTH_LONG).show();
                 break;
-            case 4:
+            case 4: //A propos
                 Intent about=new Intent(this,AboutActivity.class);
-                about.putExtra("statData", stat);
+                about.putExtra("loginUser", joueur);
                 startActivityForResult(about, 40);
                 break;
-            case 5:
+            case 6: //contact
+                Intent contact=new Intent(this,ContactActivity.class);
+                contact.putExtra("loginUser", joueur);
+                startActivityForResult(contact, 55);
+                break;
+            case 5: //quitter
                 finish();
                 System.exit(0);
                 break;
@@ -269,21 +284,26 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.btnEvaluer:
                 Intent evalInten=new Intent(this,EvaluateActivity.class);
-                evalInten.putExtra("statData",stat);
+                evalInten.putExtra("loginUser",joueur);
                 startActivityForResult(evalInten, 45);
                 break;
             case R.id.btnStat:
-                Toast.makeText(this,"Statistique\n==============\n"+stat.Appreciation(noteMax)+"\n************\nNote: "+stat.getNote()+"\n Note Android: "+stat.noteAndroid+"\nNote JEE: "+stat.noteJEE+"\n Tentative :" + stat.getNbTentatives()+"\n Tentative Android :" + stat.nbTentativeDroid+"\n Tentative Android :" + stat.nbTentativeJEE,Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"Statistique\n==============\n"+joueur.getMyStat().Appreciation(noteMax)+"\n************\nNote: "+joueur.getMyStat().getNote()+"\n Note Android: "+joueur.getMyStat().noteAndroid+"\nNote JEE: "+joueur.getMyStat().noteJEE+"\n Tentative :" + joueur.getMyStat().getNbTentatives()+"\n Tentative Android :" + joueur.getMyStat().nbTentativeDroid+"\n Tentative Android :" + joueur.getMyStat().nbTentativeJEE,Toast.LENGTH_LONG).show();
                 break;
             case R.id.btnAPropos:
                 Intent about=new Intent(this,AboutActivity.class);
-                about.putExtra("statData", stat);
+                about.putExtra("loginUser", joueur);
                 startActivityForResult(about, 40);
                // Toast.makeText(this,"Author: Roland AKAMBA \nSociety: ESIGELEC",Toast.LENGTH_LONG).show();
                 break;
             case R.id.btnQuitter:
                 finish();
                 System.exit(0);
+                break;
+            case R.id.connectionInfo:
+                Intent mapInten=new Intent(this,MapsFrag.class);
+                mapInten.putExtra("loginUser",joueur);
+                startActivityForResult(mapInten, 100);
                 break;
             default:
                 break;
@@ -294,23 +314,34 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode,int resultCode,Intent data){
 
         switch (requestCode) {
-            case 11:
+            case 11: //JEE quiz
                 if(resultCode==RESULT_OK) {
-                    stat = (Statistiques) data.getExtras().getSerializable("statData");
+                    joueur= (Joueur) data.getExtras().getSerializable("loginUser");
 
-                    Toast.makeText(this, stat.Appreciation(noteMax)+"\n*************\nYour current mark: " + stat.getNote()+"\n Note Android: "+stat.noteAndroid+"\nNote JEE: "+stat.noteJEE + "\n Tentative :" + stat.getNbTentatives()+"\n Tentative Android :" + stat.nbTentativeDroid+"\n Tentative Android :" + stat.nbTentativeJEE, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, joueur.getMyStat().Appreciation(noteMax)+"\n*************\nYour current mark: " + joueur.getMyStat().getNote()+"\n Note Android: "+joueur.getMyStat().noteAndroid+"\nNote JEE: "+joueur.getMyStat().noteJEE + "\n Tentative :" + joueur.getMyStat().getNbTentatives()+"\n Tentative Android :" + joueur.getMyStat().nbTentativeDroid+"\n Tentative Android :" + joueur.getMyStat().nbTentativeJEE, Toast.LENGTH_LONG).show();
+                    if(joueur.getMyStat().isGoodResult){
+                        Intent contact1=new Intent(this,ContactActivity.class);
+                        contact1.putExtra("loginUser", joueur);
+                        startActivityForResult(contact1, 55);
+                    }
+
                 }
                 break;
-            case 12:
+            case 12: //Android quiz
                 if(resultCode==RESULT_OK) {
-                    stat = (Statistiques) data.getExtras().getSerializable("statData");
-                    Toast.makeText(this, stat.Appreciation(noteMax)+"\n***************\nYour current mark: " + stat.getNote()+"\n Note Android: "+stat.noteAndroid+"\nNote JEE: "+stat.noteJEE + "\n Tentative :" + stat.getNbTentatives()+"\n Tentative Android :" + stat.nbTentativeDroid+"\n Tentative Android :" + stat.nbTentativeJEE, Toast.LENGTH_LONG).show();
+                    joueur= (Joueur) data.getExtras().getSerializable("loginUser");
+                    Toast.makeText(this, joueur.getMyStat().Appreciation(noteMax)+"\n***************\nYour current mark: " + joueur.getMyStat().getNote()+"\n Note Android: "+joueur.getMyStat().noteAndroid+"\nNote JEE: "+joueur.getMyStat().noteJEE + "\n Tentative :" + joueur.getMyStat().getNbTentatives()+"\n Tentative Android :" + joueur.getMyStat().nbTentativeDroid+"\n Tentative Android :" + joueur.getMyStat().nbTentativeJEE, Toast.LENGTH_LONG).show();
+                    if(joueur.getMyStat().isGoodResult){
+                        Intent contact1=new Intent(this,ContactActivity.class);
+                        contact1.putExtra("loginUser", joueur);
+                        startActivityForResult(contact1, 55);
+                    }
                 }
                 break;
-            case 45:
+            case 45: //statistic
                 if(resultCode==RESULT_OK){
-                    stat = (Statistiques) data.getExtras().getSerializable("statData");
-                    Toast.makeText(this, "values are.. "+stat.evalTotal, Toast.LENGTH_LONG).show();
+                    joueur= (Joueur) data.getExtras().getSerializable("loginUser");
+                    Toast.makeText(this, "values are.. "+joueur.getMyStat().evalTotal, Toast.LENGTH_LONG).show();
                 }
                 break;
             default:
@@ -320,36 +351,41 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
+    //endregion
+
     // get th user location
     public void getMyPosition(){
-        String address;
-        String city;
+        String address="";
+        String city="";
         //checked connection availability
         QuizConnectionRequest quizConnection=QuizConnectionRequest.getInstance(this);
 
-        if(quizConnection.isOnline())
+        if(myLocation.isGPSEnabled())
         {
             //this get the street number and its name such as 2 avenue du Roi as a string
-            address=MyLocation.getLocationAddressName(this).get(0).getAddressLine(0)+" ";
+            address=myLocation.getLocationAddressName().get(0).getAddressLine(0)+" ";
             //this get the locaty name (town) and the postale code such as 76000 Rouen as a string
-            address+=MyLocation.getLocationAddressName(this).get(0).getAddressLine(1)+" ";
+            address+=myLocation.getLocationAddressName().get(0).getAddressLine(1)+" ";
             //this get the country name as a string
-           address+= MyLocation.getLocationAddressName(this).get(0).getAddressLine(2);
+            address+= myLocation.getLocationAddressName().get(0).getAddressLine(2);
 
             //get user's city
-            city=MyLocation.getLocationAddressName(this).get(0).getAddressLine(1);
-            double lat=MyLocation.getMyLocation(this).getLatitude();
-            double lon=MyLocation.getMyLocation(this).getLongitude();
+            city=myLocation.getLocationAddressName().get(0).getAddressLine(1);
+
+            //getting gps latitude and longitude
+            double lat=myLocation.getMyLocation().getLatitude();
+            double lon=myLocation.getMyLocation().getLongitude();
             joueur.setLatitude(lat);
             joueur.setLongitude(lon);
             joueur.setAddress(address);
             joueur.setCity(city);
-
             //TODO create an update method to do this properly
             //dataManager.deleteJoueur(joueur.getId());
             //dataManager.insertJoueur(joueur);
 
         }
-
+        else
+            myLocation.alertUserGPSNotAvailable(this);
     }
+
 }

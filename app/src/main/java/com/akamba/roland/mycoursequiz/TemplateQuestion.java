@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.akamba.roland.mycoursequiz.beans.Choix;
 import com.akamba.roland.mycoursequiz.beans.Jeu;
+import com.akamba.roland.mycoursequiz.beans.Joueur;
 import com.akamba.roland.mycoursequiz.beans.LibelleQuestion;
 import com.akamba.roland.mycoursequiz.beans.Question;
 import com.akamba.roland.mycoursequiz.beans.Statistiques;
@@ -29,7 +30,7 @@ import java.util.Map;
 
 public class TemplateQuestion extends ActionBarActivity implements View.OnClickListener{
     Intent currentIntet;
-    Statistiques stat;
+    Joueur joueur;
     String sender;
     //Question query;
     DataManager dataManager;
@@ -55,7 +56,7 @@ public class TemplateQuestion extends ActionBarActivity implements View.OnClickL
         
         //getting the context from the sender
         currentIntet=getIntent();
-        stat= (Statistiques) currentIntet.getExtras().getSerializable("statData");
+        joueur= (Joueur) currentIntet.getExtras().getSerializable("loginUser");
         sender= (String) currentIntet.getStringExtra("sender");
         TextView t=(TextView)findViewById(R.id.info);
             t.setText("yo!");
@@ -159,14 +160,14 @@ public class TemplateQuestion extends ActionBarActivity implements View.OnClickL
         switch (id){
             case 11:
                 Intent JEEIntent= new Intent(this,TemplateQuestion.class);
-                JEEIntent.putExtra("statData",stat);
+                JEEIntent.putExtra("loginUser",joueur);
                 JEEIntent.putExtra("sender","JEE");
                 startActivityForResult(JEEIntent,11);
                 //Toast.makeText(this,"JEE"+item.getTitle(),Toast.LENGTH_LONG).show();
                 break;
             case 12:
                 Intent droidIntent= new Intent(this,TemplateQuestion.class);
-                droidIntent.putExtra("statData",stat);
+                droidIntent.putExtra("loginUser",joueur);
                 droidIntent.putExtra("sender","DROID");
                 startActivityForResult(droidIntent,12);
                 //Toast.makeText(this,"Android"+item.getTitle(),Toast.LENGTH_LONG).show();
@@ -206,11 +207,11 @@ public class TemplateQuestion extends ActionBarActivity implements View.OnClickL
                         jeu.addPoint(10);
                     //End of party
                     if(sender.toString().equals("JEE"))
-                    stat.noteJEE+= jeu.totalPoint;
+                    joueur.getMyStat().noteJEE+= jeu.totalPoint;
                     else
-                    stat.noteAndroid+= jeu.totalPoint;
+                    joueur.getMyStat().noteAndroid+= jeu.totalPoint;
                     Intent inten1 = new Intent();
-                    inten1.putExtra("statData", stat);
+                    inten1.putExtra("loginUser", joueur);
                     setResult(RESULT_OK, inten1);
                     finish();
                 }

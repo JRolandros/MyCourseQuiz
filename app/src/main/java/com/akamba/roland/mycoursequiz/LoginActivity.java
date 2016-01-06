@@ -379,6 +379,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                     Toast myToast = Toast.makeText(mContext,userCreatedMessage, Toast.LENGTH_SHORT);
                                     myToast.show();
                                     Intent myIntent = new Intent(LoginActivity.this,MainActivity.class);
+                                    myIntent.putExtra("loginUser",user);
                                     LoginActivity.this.startActivity(myIntent);
                                 } finally{
                                     if (dataManager!=null)

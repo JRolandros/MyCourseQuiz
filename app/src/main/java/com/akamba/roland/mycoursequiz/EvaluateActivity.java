@@ -11,12 +11,13 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
+import com.akamba.roland.mycoursequiz.beans.Joueur;
 import com.akamba.roland.mycoursequiz.beans.Statistiques;
 
 
 public class EvaluateActivity extends ActionBarActivity implements View.OnClickListener{
 
-    Statistiques stat;
+    Joueur joueur;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +27,7 @@ public class EvaluateActivity extends ActionBarActivity implements View.OnClickL
         img.setImageResource(R.drawable.esiglogo);
 
         Intent child= getIntent();
-        stat= (Statistiques) child.getExtras().getSerializable("statData");
+        joueur= (Joueur) child.getExtras().getSerializable("loginUser");
 
         RatingBar mBar = (RatingBar) findViewById(R.id.ratingBar);
         Button btnEValValider=(Button) findViewById(R.id.btnEvalValider);
@@ -64,9 +65,9 @@ public class EvaluateActivity extends ActionBarActivity implements View.OnClickL
             RatingBar mBar = (RatingBar) findViewById(R.id.ratingBar);
 
             //Toast.makeText(this, "values are.. " + mBar.getRating(), Toast.LENGTH_LONG).show();
-            stat.evalTotal=mBar.getRating();
+            joueur.getMyStat().evalTotal=mBar.getRating();
             Intent inten1=new Intent();
-            inten1.putExtra("statData",stat);
+            inten1.putExtra("loginUser",joueur);
             setResult(RESULT_OK, inten1);
             finish();
         }

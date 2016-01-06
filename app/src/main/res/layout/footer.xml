@@ -15,5 +15,6 @@
     android:layout_margin="5dp"
     android:text="Fixed Footer"
     android:textColor="#000"
+    android:clickable="true"
     android:textSize="20sp" />
     </RelativeLayout>
